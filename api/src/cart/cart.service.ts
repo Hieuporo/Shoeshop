@@ -6,14 +6,20 @@ import { CartItemDto } from './dto/cartItem.dto';
 export class CartService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  checkUserHasCart(userId: string) {
+    return this.prismaService.cart.findFirst({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
   createNewCart(userId) {
-    const createNewCart = this.prismaService.cart.create({
+    return this.prismaService.cart.create({
       data: {
         ...userId,
       },
     });
-
-    return createNewCart;
   }
 
   async addProducttoCart(product, productId: string, req) {
@@ -23,11 +29,7 @@ export class CartService {
       name: string;
     };
 
-    const cart = await this.prismaService.cart.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
+    const cart = await this.checkUserHasCart(user.id);
 
     if (!cart) {
       throw new ForbiddenException('Cart not found');
@@ -69,7 +71,7 @@ export class CartService {
     return cart;
   }
 
-  async getAllCartItems(req) {
+  async getAllCartItemsWithPrice(req) {
     const user = req.user as {
       id: string;
       email: string;
@@ -86,11 +88,31 @@ export class CartService {
       throw new ForbiddenException('Cart not found');
     }
 
-    return this.prismaService.cartItem.findMany({
+    let cartItems = await this.prismaService.cartItem.findMany({
       where: {
         cartId: cart.id,
       },
     });
+
+    const result = [];
+
+    for (const item of cartItems) {
+      const product = await this.prismaService.product.findUnique({
+        where: {
+          id: item.productId,
+        },
+      });
+
+      const newItem = {
+        price: product.price,
+        discount: product.discount,
+        ...item,
+      };
+
+      result.push(newItem);
+    }
+
+    return result;
   }
 
   async updateCartItem(cartItem: CartItemDto, cartItemId: string, req) {

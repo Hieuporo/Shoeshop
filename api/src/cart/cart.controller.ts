@@ -30,7 +30,7 @@ export class CartController {
 
   @Get('getAllCartItems')
   getAllCartItems(@Request() req) {
-    return this.cartService.getAllCartItems(req);
+    return this.cartService.getAllCartItemsWithPrice(req);
   }
 
   @Patch(':id')

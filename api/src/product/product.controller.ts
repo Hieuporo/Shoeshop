@@ -38,7 +38,10 @@ export class ProductController {
     return this.productService.createProduct(body);
   }
 
+  // add base products
   @Get('createProducts')
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(RoleCheckInterceptor)
   createBaseProduct() {
     return this.productService.createMultipleProduct();
   }
@@ -54,6 +57,8 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(RoleCheckInterceptor)
   updateProduct(
     @Param('id') productId: string,
     @Body() product: UpdateProductDto,
@@ -62,6 +67,8 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(RoleCheckInterceptor)
   deleteProduct(@Param('id') productId: string) {
     return this.productService.deleteProduct(productId);
   }

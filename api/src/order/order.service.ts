@@ -76,4 +76,138 @@ export class OrderService {
 
     return order;
   }
+
+  async updateOrderInfo(orderData: CreateOrderDto, req, orderId: string) {
+    const user = req.user as {
+      id: string;
+      email: string;
+      role: string;
+    };
+
+    const isYourOrder = await this.prismaService.order.findFirst({
+      where: {
+        id: orderId,
+        userId: user.id,
+      },
+    });
+
+    if (!isYourOrder) {
+      throw new BadRequestException('Order is not exist');
+    }
+
+    const orderAfterUpdate = await this.prismaService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        ...orderData,
+      },
+    });
+
+    return orderAfterUpdate;
+  }
+
+  async removeOrder(orderId: string, req) {
+    const user = req.user as {
+      id: string;
+      email: string;
+      role: string;
+    };
+
+    const isYourOrder = await this.prismaService.order.findFirst({
+      where: {
+        id: orderId,
+        userId: user.id,
+      },
+    });
+
+    if (!isYourOrder) {
+      throw new BadRequestException('Something went wrong');
+    }
+
+    // delete all order items
+    await this.prismaService.orderItem.deleteMany({
+      where: {
+        orderId: orderId,
+      },
+    });
+
+    return this.prismaService.order.delete({
+      where: {
+        id: orderId,
+      },
+    });
+  }
+
+  getAllOrders(req) {
+    const user = req.user as {
+      id: string;
+      email: string;
+      role: string;
+    };
+
+    return this.prismaService.order.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
+  async getProductsByStatus() {
+    const pendingOrder = await this.prismaService.order.findMany({
+      where: {
+        status: 'pending',
+      },
+    });
+
+    const processingOrder = await this.prismaService.order.findMany({
+      where: {
+        status: 'isDelivering',
+      },
+    });
+
+    const deliveredOrder = await this.prismaService.order.findMany({
+      where: {
+        status: 'delivered',
+      },
+    });
+
+    const rejectOrder = await this.prismaService.order.findMany({
+      where: {
+        status: 'reject',
+      },
+    });
+
+    return {
+      pending: pendingOrder,
+      processing: processingOrder,
+      delivered: deliveredOrder,
+      rejected: rejectOrder,
+    };
+  }
+
+  async changeProductStatus(body, orderId: string) {
+    const order = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+
+    return this.prismaService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: body.status,
+      },
+    });
+  }
+
+  confirmOrder(orderId) {}
+
+  rejectOrder(orderId) {}
 }

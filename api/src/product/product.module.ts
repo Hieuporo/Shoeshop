@@ -4,7 +4,7 @@ import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 @Module({
-  imports: [PrismaModule, CloudinaryModule],
+  imports: [CloudinaryModule],
   controllers: [ProductController],
   providers: [ProductService],
 })

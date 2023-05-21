@@ -1,12 +1,14 @@
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class CreateOrderDto {
+export class UpdateOrderDto {
   @Expose()
   @IsString()
+  @IsOptional()
   address: string;
 
   @Expose()
   @IsString()
+  @IsOptional()
   shipping: string;
 }

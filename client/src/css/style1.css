@@ -1,9 +1,3 @@
-/*--
-Author: W3layouts
-Author URL: http://w3layouts.com
---*/
-
-/* reset code */
 html {
   scroll-behavior: smooth;
 }
@@ -114,7 +108,7 @@ img {
 .w3l-signinform {
   padding: 40px 40px;
   min-height: 100vh;
-  background-image: url("https://images.unsplash.com/photo-1536532184021-da5392b55da1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Ymx1ZSUyMHNreXxlbnwwfHwwfHw%3D&w=1000&q=80");
+  background-image: url("https://accgroup.vn/wp-content/uploads/2023/02/Background-la-gi.jpg");
   background-size: cover; /* Phù hợp với kích thước phần tử */
   background-position: center center; /* Canh giữa ảnh */
   background-size: cover;
@@ -141,6 +135,7 @@ input[type="Password"] {
   font-size: 17px;
   font-weight: 500;
   color: #fff;
+  width: 100%;
   text-align: left;
   padding: 18px 18px 20px 42px;
   display: inline-block;
@@ -189,7 +184,7 @@ input {
   outline: none;
 }
 
-.btn-primary {
+.input-group .btn-primary {
   color: #232005;
   background-color: #ffd900;
   margin-top: 30px;
@@ -200,10 +195,6 @@ input {
   font-size: 18px;
   font-weight: 600;
   border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -o-border-radius: 6px;
   border: none;
   text-transform: capitalize;
 }
@@ -245,6 +236,10 @@ input {
 .form-row .form-check input[type="checkbox"] + label {
   cursor: pointer;
   color: #fff;
+}
+
+.w3_info h1 {
+  color: white;
 }
 
 .w3_info h2 {
@@ -292,7 +287,8 @@ h1 {
   text-align: center;
 }
 .w3_info p.sub-para {
-  padding-bottom: 40px;
+  margin-top: 10px;
+  padding-bottom: 30px;
   text-align: left;
   color: #fff;
   opacity: 0.9;
@@ -320,6 +316,10 @@ a.forgot {
   color: #ffeb3b;
   margin-top: 2px;
   opacity: 0.8;
+}
+
+.container {
+  max-width: 960px !important;
 }
 
 a.forgot:hover {
@@ -536,7 +536,7 @@ p.continue span:after {
   }
 
   .btn-primary {
-    padding: 13px 12px;
+    padding: 23px 12px;
     font-size: 13px;
   }
 
@@ -555,6 +555,25 @@ p.continue span:after {
   }
 }
 
-/** /Responsive **/
+.btn-login {
+  height: 50px;
+  font-size: 16px !important;
+  border-radius: 4px !important;
+  border: none !important;
+  color: #232005;
+  background-color: #ffd900;
+  margin-top: 30px;
+  outline: none;
+  width: 100%;
+  padding: 15px 15px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  text-transform: capitalize;
+}
 
-/*-- //form styling --*/
+.btn-login:hover {
+  background-color: #eac803 !important;
+}

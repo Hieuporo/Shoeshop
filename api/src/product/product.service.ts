@@ -25,8 +25,50 @@ export class ProductService {
     return newProduct;
   }
 
-  getAllProducts() {
-    return this.prismaService.product.findMany();
+  async getAllProducts() {
+    const products = await this.prismaService.product.findMany({
+      include: {
+        review: true,
+      },
+    });
+
+    return products;
+  }
+
+  async searchProductByBrandAndPrice(data) {
+    const { min, max, brand, name } = data;
+    let query;
+    if (min && max) {
+      query = {
+        price: {
+          gte: parseFloat(min),
+          lte: parseFloat(max),
+        },
+      };
+    }
+
+    if (brand) {
+      query = {
+        ...query,
+        brand,
+      };
+    }
+
+    if (name) {
+      query = {
+        ...query,
+        name: {
+          contains: name,
+          mode: 'insensitive', // Tìm kiếm không phân biệt chữ hoa chữ thường
+        },
+      };
+    }
+
+    const products = await this.prismaService.product.findMany({
+      where: query,
+    });
+
+    return products;
   }
 
   async getProductById(id: string) {
@@ -70,6 +112,17 @@ export class ProductService {
       }
       throw new ForbiddenException('Something went wrong, please try again');
     }
+  }
+
+  getFourProducts(currentProductId) {
+    return this.prismaService.product.findMany({
+      take: 4,
+      where: {
+        id: {
+          not: currentProductId,
+        },
+      },
+    });
   }
 
   async createMultipleProduct() {

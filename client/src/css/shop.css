@@ -1,4 +1,8 @@
 /*-- Shopping-Cart-PopUp --*/
+h4 a {
+  padding-top: 1em;
+  text-decoration: none;
+}
 
 div#my-cart-modal {
   background-color: rgba(0, 0, 0, 0.5);
@@ -430,10 +434,38 @@ p.sbmincart-empty-text {
   text-align: center;
   line-height: 2.3;
 }
-span.money {
-  font-size: 1em;
-  font-weight: 700;
+
+.brand-name {
+  margin-left: 16px;
+  display: inline-block;
 }
+
+.input-brand:checked {
+  background-color: black;
+}
+
+.input-brand {
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  position: relative;
+  top: 2px;
+}
+
+span.money {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #969595;
+  text-decoration: line-through;
+}
+
+span.money.discount {
+  color: #f30000;
+  text-decoration: none;
+  padding-left: 4px;
+}
+
 .inner-men-cart-pro {
   height: 100%;
   position: relative;
@@ -452,6 +484,8 @@ span.money {
 }
 
 .link-product-add-cart {
+  text-decoration: none;
+  font-size: 1.8rem;
   background: #0c0c0c;
   color: #fff;
   display: inline-block;
@@ -529,7 +563,7 @@ ul.stars li a:hover {
   color: #fb383b;
 }
 .product-shoe-info {
-  padding: 15px;
+  padding: 15px 0 0 0;
   border: 1px solid #e4e4e4;
 }
 /*-- //effect on products --*/
@@ -648,7 +682,6 @@ ul.stars li a:hover {
   outline: none;
   padding: 11px 10px 10px 10px;
   font-size: 13px;
-  color: #c4c4c4;
   letter-spacing: 1px;
 }
 
@@ -725,6 +758,11 @@ input#amount1 {
   padding: 20px 15px;
   border: 1px solid #e4e4e4;
 }
+
+.side-bar > input {
+  color: black !important;
+}
+
 .shop_left img,
 .shop_right img {
   width: 100%;
@@ -852,7 +890,9 @@ input.checked {
 }
 
 .info-product-price {
-  margin: 12px 0;
+  display: flex;
+  justify-content: center;
+  margin: 25px 0;
 }
 
 span.item_price {

@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { Slider, Typography } from "@material-ui/core";
-
-const PriceRange = () => {
-  const [value, setValue] = useState([20, 8000]);
-
+import PropTypes from "prop-types";
+const PriceRange = ({ value, setValue }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -18,7 +15,7 @@ const PriceRange = () => {
         onChange={handleChange}
         valueLabelDisplay="auto"
         min={0}
-        max={8000}
+        max={1000}
         style={{ fontSize: "16px" }}
       />
 
@@ -27,6 +24,11 @@ const PriceRange = () => {
       </Typography>
     </div>
   );
+};
+
+PriceRange.propTypes = {
+  value: PropTypes.arrayOf(PropTypes.number).isRequired,
+  setValue: PropTypes.func.isRequired,
 };
 
 export default PriceRange;

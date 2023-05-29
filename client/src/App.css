@@ -26,6 +26,10 @@ ul {
   list-style: none;
 }
 
+a {
+  text-decoration: none;
+}
+
 p,
 ul,
 ol {
@@ -408,11 +412,6 @@ li.dropdown.act a.w3_icons_act {
   border: none;
   background: rgba(0, 0, 0, 0.75);
   width: 100%;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  -o-appearance: none;
-  appearance: none;
   font-size: 1em;
   padding: 2em 3em;
   color: #fff;
@@ -1299,6 +1298,44 @@ a.b-home {
   margin: 1em 0 2em 0;
 }
 
+.img-product {
+  height: 700px;
+  width: 650px;
+}
+
+.add-to-cart-btn {
+  width: 200px;
+  height: 40px;
+  font-size: 12px;
+  margin-top: 20px;
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: darkred;
+}
+
+.color-quality {
+  display: flex;
+  align-items: center;
+}
+
+.color-quality select {
+  width: 30px;
+  height: 40px;
+}
+
+.color-quality select option {
+  font-size: 18px;
+  text-align: center;
+}
+
 .error_page {
   margin: 0 auto;
   text-align: center;
@@ -1533,7 +1570,7 @@ button.btn1 {
     margin-top: 2em;
   }
   .product-shoe-info {
-    padding: 15px;
+    padding: 15px 0 0 0;
     width: 48%;
     margin: 0.5em;
     float: left;
@@ -1596,6 +1633,7 @@ button.btn1 {
   .product-men.women_two {
     margin: 0;
   }
+
   .callbacks_tabs {
     bottom: 16%;
     left: 43%;
@@ -1754,7 +1792,7 @@ button.btn1 {
     width: 100%;
   }
   .product-shoe-info {
-    padding: 15px;
+    padding: 15px 0 0 0;
     width: 47%;
     margin: 0.5em;
     float: left;
@@ -1923,7 +1961,7 @@ button.btn1 {
     font-size: 4em;
   }
   .product-shoe-info {
-    padding: 15px;
+    padding: 15px 0 0 0;
     width: 46%;
     margin: 0.5em;
     float: left;
@@ -2081,7 +2119,7 @@ button.btn1 {
     padding: 2em 0em;
   }
   .product-shoe-info {
-    padding: 15px;
+    padding: 15px 0 0 0;
     width: 100%;
     margin: 0.5em 0;
     float: left;

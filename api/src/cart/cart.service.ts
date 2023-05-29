@@ -56,10 +56,6 @@ export class CartService {
       },
     });
 
-    if (product.quantity > productToCheck.quantity) {
-      throw new ForbiddenException('Product quantity is not enough');
-    }
-
     await this.prismaService.cartItem.create({
       data: {
         ...product,

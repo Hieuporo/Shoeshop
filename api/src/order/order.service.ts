@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import JwtAuthenticationGuard from '../auth/guard/Jwt-authentication.guard';
@@ -36,7 +37,8 @@ export class OrderService {
       data: {
         userId: user.id,
         totalPrice: cartItems.reduce(
-          (acc, item) => acc + item.price * ((100 - item.discount) / 100),
+          (acc, item) =>
+            acc + item.price * ((100 - item.discount) / 100) * item.quantity,
           0,
         ),
         status: 'pending',
@@ -162,7 +164,7 @@ export class OrderService {
 
     const processingOrder = await this.prismaService.order.findMany({
       where: {
-        status: 'isDelivering',
+        status: 'processing',
       },
     });
 
@@ -174,7 +176,7 @@ export class OrderService {
 
     const rejectOrder = await this.prismaService.order.findMany({
       where: {
-        status: 'reject',
+        status: 'rejected',
       },
     });
 
@@ -207,7 +209,115 @@ export class OrderService {
     });
   }
 
-  confirmOrder(orderId) {}
+  async confirmOrder(orderId: string) {
+    const order = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        products: true,
+      },
+    });
 
-  rejectOrder(orderId) {}
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // check product quantity
+
+    const outOfStockProducts = [];
+
+    await Promise.all(
+      order.products.map(async (productOrder) => {
+        const product = await this.prismaService.product.findFirst({
+          where: {
+            id: productOrder.productId,
+          },
+        });
+
+        if (productOrder.quantity > product.quantity) {
+          outOfStockProducts.push(product);
+          return product.name;
+        }
+      }),
+    );
+
+    if (outOfStockProducts.length > 0) {
+      throw new BadRequestException(
+        `${outOfStockProducts.join(',')} out of stock products`,
+      );
+    }
+
+    // decrease quantity
+    await Promise.all(
+      order.products.map(async (productOrder) => {
+        const product = await this.prismaService.product.update({
+          where: {
+            id: productOrder.productId,
+          },
+          data: {
+            quantity: {
+              decrement: productOrder.quantity,
+            },
+          },
+        });
+      }),
+    );
+
+    const orderConfirmed = await this.prismaService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: 'success',
+      },
+    });
+
+    return orderConfirmed;
+  }
+
+  //when the user does not receive the goods
+  async rejectOrder(orderId: string) {
+    const order = await this.prismaService.order.findFirst({
+      where: {
+        id: orderId,
+        status: 'processing',
+      },
+      include: {
+        products: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // return product quantity
+    await Promise.all(
+      order.products.map(async (productOrder) => {
+        const product = await this.prismaService.product.update({
+          where: {
+            id: productOrder.productId,
+          },
+          data: {
+            quantity: {
+              increment: productOrder.quantity,
+            },
+          },
+        });
+      }),
+    );
+
+    // update status
+    const orderRejected = await this.prismaService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: 'rejected',
+      },
+    });
+
+    return orderRejected;
+  }
 }

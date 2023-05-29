@@ -9,6 +9,7 @@ import {
   Delete,
   Patch,
   Param,
+  Query,
 } from '@nestjs/common';
 import { ProductDto } from './dto/createProduct.dto';
 
@@ -26,6 +27,7 @@ export class ProductController {
   ) {}
 
   @Post('uploadImage')
+  @UseGuards(JwtAuthenticationGuard)
   @UseInterceptors(FileInterceptor('file'))
   uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.cloudinaryService.uploadFile(file);
@@ -36,6 +38,23 @@ export class ProductController {
   @UseInterceptors(RoleCheckInterceptor)
   createProduct(@Body() body: ProductDto) {
     return this.productService.createProduct(body);
+  }
+
+  @Get('getFourProducts/:id')
+  getFourProducts(@Param('id') id: string) {
+    return this.productService.getFourProducts(id);
+  }
+
+  @Get('searchProductByBrandAndPrice')
+  searchProductByBrandAndPrice(
+    @Query('brand') brand: string,
+    @Query('min') min: number,
+    @Query('max') max: number,
+    @Query('name') name: string,
+  ) {
+    const data = { brand, min, max, name };
+
+    return this.productService.searchProductByBrandAndPrice(data);
   }
 
   // add base products

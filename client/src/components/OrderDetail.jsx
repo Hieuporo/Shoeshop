@@ -71,14 +71,6 @@ const OrderDetail = () => {
                     placeholder="Town/City"
                   />
                 </div>
-                <div className="controls">
-                  <label className="control-label">Address type: </label>
-                  <select className="form-control option-w3ls">
-                    <option>Office</option>
-                    <option>Home</option>
-                    <option>Commercial</option>
-                  </select>
-                </div>
               </div>
               <button
                 className="submit check_out"

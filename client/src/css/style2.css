@@ -39,6 +39,16 @@ section#formHolder {
   transition: all 0.6s cubic-bezier(1, -0.375, 0.285, 0.995);
   z-index: 9999;
 }
+
+.swal-container {
+  margin-left: 480px;
+}
+
+.swal2-container.swal2-backdrop-show,
+.swal2-container.swal2-noanimation {
+  background: none;
+}
+
 .brand.active {
   width: 100%;
 }
@@ -51,7 +61,7 @@ section#formHolder {
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.85);
-  z-index: -1;
+  z-index: 0;
 }
 .brand a.logo {
   color: #f95959;

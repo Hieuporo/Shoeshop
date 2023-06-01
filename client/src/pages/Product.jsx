@@ -2,13 +2,49 @@ import { useEffect, useState } from "react";
 import Star from "../components/Star";
 import SmallProductItem from "../components/SmallProductItem";
 import "../css/easy-responsive-tabs.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useAppContext } from "../context/appContext";
+import Rating from "@mui/material/Rating";
 
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState();
+  const [option, setOption] = useState("tab1");
+  const [rating, setRating] = useState(null);
+
   const [products, setProducts] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const { fetchCart, setFetchCart } = useAppContext();
+
+  const navigate = useNavigate();
+
+  const addToCart = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      await axios.post(`/api/cart/${id}`, { quantity }, config);
+      setFetchCart(!fetchCart);
+      navigate("/cart");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "It already exists in cart",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
+  const handleChangeQuantity = (event) => {
+    const selectedQuantity = parseInt(event.target.value);
+    setQuantity(selectedQuantity);
+  };
 
   const getProductById = async () => {
     try {
@@ -86,10 +122,10 @@ const Product = () => {
                 <span className="item_price">
                   ${(product.price * (100 - product.discount)) / 100}
                 </span>
-                <del>${product.price}</del>
+                {product.discount && <del>${product.price}</del>}
               </p>
               <div className="rating1">
-                <Star />
+                <Star rating={product.averageStar} />
               </div>
 
               <div className="color-quality">
@@ -103,10 +139,13 @@ const Product = () => {
                   <select
                     className="form-select"
                     style={{ width: "50px", height: "40px" }}
+                    onChange={handleChangeQuantity}
                   >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    {Array.from({ length: 100 }, (_, index) => (
+                      <option key={index} value={index + 1}>
+                        {index + 1}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -123,7 +162,9 @@ const Product = () => {
                     />
                     <input type="hidden" name="amount" defaultValue={405.0} />
                     <Link to="/cart">
-                      <button className="add-to-cart-btn">ADD TO CART</button>
+                      <button className="add-to-cart-btn" onClick={addToCart}>
+                        ADD TO CART
+                      </button>
                     </Link>
 
                     <a href="#" data-toggle="modal" data-target="#myModal1" />
@@ -136,16 +177,40 @@ const Product = () => {
             <div className="responsive_tabs">
               <div id="horizontalTab">
                 <ul className="resp-tabs-list">
-                  <li>Description</li>
-                  <li>Reviews</li>
+                  <li onClick={() => setOption("tab1")}>Description</li>
+                  <li onClick={() => setOption("tab2")}>Reviews</li>
                 </ul>
                 <div className="resp-tabs-container">
-                  {/*/tab_one*/}
-                  <div className="tab1">
-                    <div className="single_page">
-                      <p>{product.description}</p>
+                  {option === "tab1" ? (
+                    <div className="tab1">
+                      <div className="single_page">
+                        <p>{product.description}</p>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="tab2">
+                      <div className="single_page">
+                        <div className="review-form">
+                          <h3>Write a Review</h3>
+                          <form>
+                            <textarea placeholder="Enter your review" />
+                            <button type="submit">Submit</button>
+                            <Rating
+                              name="text-feedback"
+                              value={rating}
+                              onChange={(event, newValue) => {
+                                setRating(newValue);
+                              }}
+                            />
+                          </form>
+                        </div>
+                        <div className="review-list">
+                          <h3>Reviews</h3>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/*//tab_one*/}
                 </div>
               </div>

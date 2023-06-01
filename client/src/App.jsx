@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Checkout from "./pages/Checkout";
 import Product from "./pages/Product";
+import Order from "./pages/Order";
 
 const Layout = () => {
   return (
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/order",
+        element: <Order />,
       },
     ],
   },

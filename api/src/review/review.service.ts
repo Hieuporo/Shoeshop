@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -19,6 +20,17 @@ export class ReviewService {
       role: string;
     };
 
+    const check = await this.prismaService.review.findFirst({
+      where: {
+        userId: user.id,
+        productId,
+      },
+    });
+
+    if (check) {
+      throw new BadRequestException('User can review only one time');
+    }
+
     const newReview = await this.prismaService.review.create({
       data: {
         ...review,
@@ -28,7 +40,7 @@ export class ReviewService {
     });
 
     if (!newReview) {
-      throw new ForbiddenException('something went wrong');
+      throw new ForbiddenException('Something went wrong');
     }
 
     return newReview;

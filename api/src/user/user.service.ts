@@ -1,4 +1,8 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -59,5 +63,36 @@ export class UserService {
     });
 
     return userAfterUpdate;
+  }
+
+  async getUserInfo(req) {
+    const user = req.user as {
+      id: string;
+      email: string;
+      role: string;
+    };
+
+    try {
+      const curUser = await this.prismaService.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          id: true,
+          email: true,
+          number: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+
+      if (!curUser) {
+        throw new BadRequestException('User not exist');
+      }
+
+      return curUser;
+    } catch (error) {
+      throw new BadRequestException('Something went wrong');
+    }
   }
 }

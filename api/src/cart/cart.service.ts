@@ -100,6 +100,7 @@ export class CartService {
       });
 
       const newItem = {
+        image: product.image,
         price: product.price,
         discount: product.discount,
         ...item,
@@ -159,5 +160,11 @@ export class CartService {
     return newCartItem;
   }
 
-  async deleteCartItem(cartItem, req) {}
+  async deleteCartItem(cartItemId, req) {
+    return await this.prismaService.cartItem.delete({
+      where: {
+        id: cartItemId,
+      },
+    });
+  }
 }

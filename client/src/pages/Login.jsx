@@ -4,10 +4,15 @@ import "../css/style1.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/appContext";
 
 const Login = () => {
+  const { setGetUserInfo, getUserInfo } = useAppContext();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const login = async (e) => {
     e.preventDefault();
@@ -24,13 +29,14 @@ const Login = () => {
       };
 
       await axios.post("api/auth/login", { email, password }, config);
-
       Swal.fire({
         icon: "success",
         title: "Successfully logged in",
         showConfirmButton: false,
         timer: 1500,
       });
+      setGetUserInfo(!getUserInfo);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

@@ -152,6 +152,16 @@ export class OrderService {
       where: {
         userId: user.id,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        products: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
   }
 

@@ -41,7 +41,7 @@ const ProductItem = ({ product }) => {
                     <span className="money discount">
                       {(product.price * (100 - product.discount)) / 100} $
                     </span>
-                    <Star rating={4} />
+                    <Star rating={product.averageStar} />
                   </div>
                 </div>
               </div>

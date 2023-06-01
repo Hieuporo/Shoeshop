@@ -1298,6 +1298,19 @@ a.b-home {
   margin: 1em 0 2em 0;
 }
 
+.img-product-cart {
+  width: 60px;
+  height: 60px;
+}
+
+.form-control.form-detail {
+  width: 800px !important;
+}
+
+.submit.check_out {
+  margin-bottom: 60px !important;
+}
+
 .img-product {
   height: 700px;
   width: 650px;

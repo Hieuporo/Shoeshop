@@ -3,7 +3,8 @@ import axios from "axios";
 
 import "../css/style2.css";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -34,8 +35,11 @@ const Register = () => {
       return;
 
     if (password !== confirmPassword) {
-      toast.success("Successfully registered !", {
-        position: toast.POSITION.TOP_CENTER,
+      Swal.fire({
+        icon: "error",
+        title: "password does not match confirm password",
+        showConfirmButton: false,
+        timer: 1500,
       });
       return;
     }
@@ -51,8 +55,11 @@ const Register = () => {
         { email, password, lastName, firstName, number },
         config
       );
-      toast.success("Successfully registered !", {
-        position: toast.POSITION.TOP_CENTER,
+      Swal.fire({
+        icon: "success",
+        title: "Successfully signed up",
+        showConfirmButton: false,
+        timer: 1500,
       });
 
       setTimeout(() => {
@@ -60,6 +67,15 @@ const Register = () => {
       }, 1500);
     } catch (err) {
       console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: err.response.data.message,
+        showConfirmButton: false,
+        timer: 10500,
+        customClass: {
+          container: "swal-container",
+        },
+      });
     }
   };
 

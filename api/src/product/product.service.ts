@@ -32,7 +32,18 @@ export class ProductService {
       },
     });
 
-    return products;
+    const productsWithAverageStar = products.map((product) => {
+      const reviews = product.review;
+      const totalStars = reviews.reduce((acc, review) => acc + review.star, 0);
+      const averageStar = reviews.length > 0 ? totalStars / reviews.length : 0;
+
+      return {
+        ...product,
+        averageStar,
+      };
+    });
+
+    return productsWithAverageStar;
   }
 
   async searchProductByBrandAndPrice(data) {
@@ -76,13 +87,18 @@ export class ProductService {
       where: {
         id,
       },
+      include: {
+        review: true,
+      },
     });
 
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-
-    return product;
+    const reviews = product.review;
+    const totalStars = reviews.reduce((acc, review) => acc + review.star, 0);
+    const averageStar = reviews.length > 0 ? totalStars / reviews.length : 0;
+    return { ...product, averageStar };
   }
 
   async updateProduct(id: string, productInfo: UpdateProductDto) {
@@ -114,15 +130,30 @@ export class ProductService {
     }
   }
 
-  getFourProducts(currentProductId) {
-    return this.prismaService.product.findMany({
+  async getFourProducts(currentProductId) {
+    const products = await this.prismaService.product.findMany({
       take: 4,
       where: {
         id: {
           not: currentProductId,
         },
       },
+      include: {
+        review: true,
+      },
     });
+    const productsWithAverageStar = products.map((product) => {
+      const reviews = product.review;
+      const totalStars = reviews.reduce((acc, review) => acc + review.star, 0);
+      const averageStar = reviews.length > 0 ? totalStars / reviews.length : 0;
+
+      return {
+        ...product,
+        averageStar,
+      };
+    });
+
+    return productsWithAverageStar;
   }
 
   async createMultipleProduct() {

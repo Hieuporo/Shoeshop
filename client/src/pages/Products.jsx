@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import PriceRange from "../components/PriceRange";
-import Pagination from "../components/Pagination";
 import ProductItem from "../components/ProductItem";
 import axios from "axios";
 
@@ -218,7 +217,6 @@ const Products = () => {
               </div>
               {/* //product-sec1 */}
               <div className="col-md-12 shop_left shp">
-                <Pagination />
                 <h6>21% off</h6>
               </div>
 

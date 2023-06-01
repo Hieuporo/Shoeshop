@@ -1,22 +1,15 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons";
-import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
+import { Rating } from "@mui/material";
+
 import PropTypes from "prop-types";
 const Star = ({ rating }) => {
   const numStars = Math.floor(rating);
 
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (i <= numStars) {
-      stars.push(<FontAwesomeIcon key={i} icon={faStar} color="yellow" />);
-    } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-      stars.push(<FontAwesomeIcon key={i} icon={faStarHalfAlt} />);
-    } else {
-      stars.push(<FontAwesomeIcon key={i} icon={farStar} />);
-    }
+  if (rating % 1 === 0) {
+    return <Rating name="read-only" value={numStars} readOnly />;
   }
-
-  return <div style={{ paddingLeft: "8px" }}>{stars}</div>;
+  return (
+    <Rating name="half-rating" defaultValue={2.5} precision={0.5} readOnly />
+  );
 };
 
 Star.propTypes = {

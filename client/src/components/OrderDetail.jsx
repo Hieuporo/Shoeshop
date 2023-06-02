@@ -10,7 +10,7 @@ const OrderDetail = () => {
 
   const createOrder = async () => {
     if (!address) {
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: "Please fill your address or add product to your cart",
         showConfirmButton: false,

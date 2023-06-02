@@ -7,7 +7,6 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/createReview.dto';
 import { Request } from 'express';
-import { UpdateReviewDto } from './dto/updateReview.dto';
 
 @Injectable()
 export class ReviewService {
@@ -28,7 +27,17 @@ export class ReviewService {
     });
 
     if (check) {
-      throw new BadRequestException('User can review only one time');
+      console.log(check);
+      const reviewAfterUpdate = await this.prismaService.review.update({
+        where: {
+          id: check.id,
+        },
+        data: {
+          ...review,
+        },
+      });
+
+      return reviewAfterUpdate;
     }
 
     const newReview = await this.prismaService.review.create({
@@ -61,41 +70,15 @@ export class ReviewService {
       where: {
         productId,
       },
+      include: {
+        user: true,
+      },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
     return reviews;
-  }
-
-  async updateReview(review: UpdateReviewDto, reviewId: string, req) {
-    const user = req.user as {
-      id: string;
-      email: string;
-      role: string;
-    };
-
-    const isCurrentUserCreate = await this.prismaService.review.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
-
-    if (!isCurrentUserCreate) {
-      throw new ForbiddenException('You are not allowed to update this review');
-    }
-
-    const reviewAfterUpdate = await this.prismaService.review.update({
-      where: {
-        id: reviewId,
-      },
-      data: {
-        ...review,
-      },
-    });
-
-    return reviewAfterUpdate;
   }
 
   async deleteReview(reviewId: string, req) {

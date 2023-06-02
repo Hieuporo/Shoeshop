@@ -7,12 +7,15 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useAppContext } from "../context/appContext";
 import Rating from "@mui/material/Rating";
+import ReviewItem from "../components/ReviewItem";
 
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [option, setOption] = useState("tab1");
   const [rating, setRating] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [content, setContent] = useState();
 
   const [products, setProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -64,9 +67,50 @@ const Product = () => {
     }
   };
 
+  const getAllReviews = async () => {
+    try {
+      const { data } = await axios.get(`/api/review/${id}`);
+      setReviews(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const sendReview = async () => {
+    if (!content) {
+      return Swal.fire({
+        icon: "error",
+        title: "Please write a review",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      await axios.post(
+        `/api/review/${id}`,
+        {
+          star: rating,
+          content,
+        },
+        config
+      );
+      getAllReviews();
+      setContent("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getProductById();
     getAnotherProduct();
+    getAllReviews();
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -191,10 +235,7 @@ const Product = () => {
                     <div className="tab2">
                       <div className="single_page">
                         <div className="review-form">
-                          <h3>Write a Review</h3>
-                          <form>
-                            <textarea placeholder="Enter your review" />
-                            <button type="submit">Submit</button>
+                          <div style={{ width: "100%" }}>
                             <Rating
                               name="text-feedback"
                               value={rating}
@@ -202,11 +243,32 @@ const Product = () => {
                                 setRating(newValue);
                               }}
                             />
-                          </form>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <input
+                              placeholder="Write a Review"
+                              className="review-input"
+                              value={content}
+                              onChange={(e) => setContent(e.target.value)}
+                            ></input>
+                            <button
+                              type="submit"
+                              className="btn-review"
+                              onClick={sendReview}
+                            >
+                              Submit
+                            </button>
+                          </div>
                         </div>
-                        <div className="review-list">
-                          <h3>Reviews</h3>
-                        </div>
+                        {reviews &&
+                          reviews.map((review) => (
+                            <ReviewItem key={review.id} review={review} />
+                          ))}
                       </div>
                     </div>
                   )}
